@@ -1,0 +1,129 @@
+const User=require('../model/user');
+const Room=require("../model/room")
+const { validationResult } = require('express-validator');
+
+
+const getAll=async (req,res,next)=>{
+   try{
+    const room=await Room.find({userId:req.user._id});
+     if(room)
+     {
+        return res.json({success:true,room:room,token:req.user.token});
+     }
+     else{
+        return res.json({success:false,msg:"Failed to load room"});
+     }
+   }
+catch(error){
+   console.log(error);
+   next(error);
+
+}
+}
+
+const getOne=async (req,res,next)=>{
+   try{
+    const roomId=req.query.roomId
+    const room=await Room.find({_id:roomId});
+     if(room)
+     {
+        return res.json({success:true,room:room,token:req.user.token});
+     }
+     else{
+        return res.json({success:false,msg:"Failed to load room"});
+     }
+   }
+catch(error){
+   console.log(error);
+   next(error);
+}
+}
+
+const create=async (req,res,next)=>{
+    try{
+        const {roomName,waterConsum,calibrated}=req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const error = new Error('Validation failed.');
+      error.statusCode = 422;
+      error.data = errors.array();
+      next(error);
+    }
+     const room= await Room.create({
+        roomName:roomName,
+        waterConsum:waterConsum,
+        calibrated:calibrated,
+        userId:req.user._id     
+     });
+     if(room)
+     {
+        return res.json({success:true,msg:"Room created successfully",token:req.user.token});
+     }
+     else{
+        return res.json({success:false,msg:"Failed to create room"});
+     }
+   }
+catch(error){
+   console.log(error);
+   next(error);
+
+}
+}
+
+
+
+
+const update=async (req,res,next)=>{
+    try{
+       const {roomId,roomName,waterConsum,calibrated}=req.body;
+       const room=await Room.find({_id:roomId});
+       if(!room){
+          return res.json({success:"false",message:"Room not found"});
+       }
+       const updated= await Room.updateOne({_id:roomId},{
+          $set:{
+             roomName,
+             waterConsum,
+             calibrated
+          }});
+          if(updated)
+          {
+            return res.json({success:true,message:"Room updated",token:req.user.token});
+          }
+          else{
+            return res.json({success:false,message:"Room not updated"});
+          }
+    }
+    catch(err)
+    {
+       console.log(err);
+       next(err);
+    }
+ }
+
+ const remove=async (req,res,next)=>{
+    try{
+     const roomId=req.query.roomId
+     const room=await Room.deleteOne({_id:roomId});
+      if(room)
+      {
+
+         return res.json({success:true,msg:"Room deleted",token:req.user.token});
+      }
+      else{
+         return res.json({success:false,msg:"Failed to delete room"});
+      }
+    }
+ catch(error){
+    console.log(error);
+    next(error);
+ }
+ }
+
+ module.exports={
+    create,
+    getAll,
+    getOne,
+    update,
+    remove
+ }

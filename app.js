@@ -14,7 +14,7 @@ app.use(express.json());
 mongoose.set('strictQuery', true);
 mongoose.connect(process.env.dburl)
   .then(result => {
-    app.listen(2000)
+    app.listen(process.env.PORT)
     console.log("connected");
   }).catch(err => {
     console.log(err);

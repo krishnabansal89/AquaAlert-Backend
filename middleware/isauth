@@ -14,10 +14,7 @@ const verifytoken=async (req,res,next)=>{
             const {email,user}=payload;
       
             const auser=await User.findOne({email});
-            const institute=await Institute.findOne({user:user})
             req.user=auser;
-            if(institute)
-            req.institute=institute
             next();
         });
         }

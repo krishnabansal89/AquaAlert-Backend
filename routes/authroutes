@@ -1,5 +1,5 @@
 const express=require("express");
-const authcontroller=require("../controller/auth");
+const authController=require("../controller/authController");
 const { body }=require("express-validator");
 const tokenverify=require("../middleware/isauth");
 const mailer=require("../middleware/mailer");
@@ -24,7 +24,7 @@ router.post('/signup',
     .trim()
     .isLength({min:2})
 
-],authcontroller.signup,mailer.sent);
+],authController.signUp,mailer.sent);
 
 router.post('/login',
 [
@@ -38,7 +38,7 @@ router.post('/login',
    .trim()
   .not()
   .isEmpty()
-],authcontroller.login);
+],authController.logIn);
   
 
   router.post('/forgotpassword',
@@ -47,7 +47,7 @@ router.post('/login',
     .normalizeEmail()
     .not()
      .isEmpty()
-  ],authcontroller.forgotpassword,mailer.sent);
+  ],authController.forgotPassword,mailer.sent);
 
 
 
@@ -60,7 +60,7 @@ router.post('/login',
      .isEmpty()
 
 
-  ],tokenverify.verifytoken,authcontroller.otpverify);
+  ],tokenverify.verifytoken,authController.otpVerify);
 
 
   router.put('/resendotp',tokenverify.verifytoken,mailer.sent);
@@ -70,8 +70,8 @@ router.post('/login',
   [
     body('newpassword','Please enter a valid mail')
     .not()
-     .isEmpty(),
-  ],tokenverify.verifytoken,authcontroller.changepassword);
+    .isEmpty(),
+  ],tokenverify.verifytoken,authController.changePassword);
 
     
 

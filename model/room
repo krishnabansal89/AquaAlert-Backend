@@ -1,0 +1,25 @@
+const mongoose=require('mongoose');
+
+const schema=mongoose.Schema;
+
+const roomschema=new schema({
+    roomName:{
+        type:String,
+        required:true,
+    },
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'user',
+        required: true
+    },
+    waterConsum:{
+        type:Number
+    },
+  calibrated:{
+        type:Number
+    }
+
+
+});
+
+module.exports=mongoose.model("room",roomschema);

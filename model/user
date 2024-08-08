@@ -14,10 +14,11 @@ const userschema=new schema({
         required:true
     },
     name:{
-        type:String
+        type:String,
+        required:true
     },
   otp:{
-        type:String
+        type:Number
     },
 
     expireotp:{
