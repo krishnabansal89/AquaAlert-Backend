@@ -1,25 +1,25 @@
-const mongoose=require('mongoose');
+const mongoose = require("mongoose");
 
-const schema=mongoose.Schema;
+const schema = mongoose.Schema;
 
-const roomschema=new schema({
-    roomName:{
-        type:String,
-        required:true,
-    },
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'user',
-        required: true
-    },
-    waterConsum:{
-        type:Number
-    },
-  calibrated:{
-        type:Number
-    }
-
-
+const roomschema = new schema({
+  roomName: {
+    type: String,
+    required: true,
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
+    required: true,
+  },
+  waterConsum: {
+    type: Number,
+    default: 0,
+  },
+  calibrated: {
+    type: Number,
+    default: 0,
+  },
 });
 
-module.exports=mongoose.model("room",roomschema);
+module.exports = mongoose.model("room", roomschema);

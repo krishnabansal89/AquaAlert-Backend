@@ -1,0 +1,37 @@
+const { body } = require("express-validator");
+const tokenverify = require("../middleware/isauth");
+const deviceController = require("../controller/deviceController");
+
+const router = express.Router();
+
+router.post("/create", tokenverify.verifytoken, deviceController.create);
+
+router.get(
+  "/getone",
+  [
+    query("deviceId")
+      .notEmpty()
+      .withMessage("ID cannot be null")
+      .isMongoId()
+      .withMessage("ID must be a valid MongoDB ObjectId"),
+  ],
+  tokenverify.verifytoken,
+  deviceController.getOne
+);
+
+router.get("/getall", tokenverify.verifytoken, deviceController.getAll);
+
+router.delete(
+  "/delete",
+  [
+    query("deviceId")
+      .notEmpty()
+      .withMessage("ID cannot be null")
+      .isMongoId()
+      .withMessage("ID must be a valid MongoDB ObjectId"),
+  ],
+  tokenverify.verifytoken,
+  deviceController.remove
+);
+
+module.exports = router;

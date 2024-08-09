@@ -1,31 +1,44 @@
-const mongoose=require('mongoose');
+const mongoose = require("mongoose");
 
-const schema=mongoose.Schema;
+const schema = mongoose.Schema;
 
-const deviceschema=new schema({
-    deviceName:{
-        type:String,
-        required:true,
-        unique:true
-    },
+const deviceschema = new schema(
+  {
     userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'user',
-        required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
     },
-    roomId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'room',
-        required: true
+    rate: {
+      type: Number,
+      default: 0,
     },
-    rate:{
-        type:Number
+    pressure: {
+      type: Number,
+      default: 0,
     },
-    pressure:{
-        type:Number
-    }
+    hourConsum: {
+      type: [Number],
+      default: () => Array(60).fill(0),
+    },
+    dailyConsum: {
+      type: [Number],
+      default: () => Array(24).fill(0),
+    },
+    weekConsum: {
+      type: [Number],
+      default: () => Array(7).fill(0),
+    },
+    monthlyConsum: {
+      type: [Number],
+      default: () => Array(30).fill(0),
+    },
+    yearlyConsum: {
+      type: [Number],
+      default: () => Array(60).fill(0),
+    },
+  },
+  { timestamps: true }
+);
 
-
-}, { timestamps: true });
-
-module.exports=mongoose.model("device",deviceschema);
+module.exports = mongoose.model("device", deviceschema);
