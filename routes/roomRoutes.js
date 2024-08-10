@@ -1,6 +1,7 @@
-const { body } = require("express-validator");
-const tokenverify = require("../middleware/isauth");
-const roomController = require("../controller/roomController");
+const express = require("express");
+const { query,  body } = require("express-validator");
+const tokenverify = require("../middleware/isauth.js");
+const roomController = require("../controller/roomController.js");
 
 const router = express.Router();
 

@@ -1,6 +1,8 @@
 const express = require("express");
 const { default: mongoose } = require("mongoose");
-const authroutes = require("./routes/authroutes");
+const authRoutes = require("./routes/authRoutes.js");
+const deviceRoutes = require("./routes/deviceRoutes.js");
+const roomRoutes = require("./routes/roomRoutes.js");
 const cors = require("cors");
 
 const dotenv = require("dotenv");
@@ -21,7 +23,9 @@ mongoose
     console.log(err);
   });
 
-app.use("/auth", authroutes);
+app.use("/auth", authRoutes);
+app.use("/room", roomRoutes);
+app.use("/device", deviceRoutes);
 
 app.use("/", (req, res) => {
   res.json({ msg: "success" });

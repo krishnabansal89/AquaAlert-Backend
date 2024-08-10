@@ -31,7 +31,7 @@ const deviceschema = new schema(
     },
     monthlyConsum: {
       type: [Number],
-      default: () => Array(30).fill(0),
+      default: () => Array(31).fill(0),
     },
     yearlyConsum: {
       type: [Number],

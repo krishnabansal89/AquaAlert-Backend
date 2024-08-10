@@ -1,8 +1,8 @@
 const express = require("express");
-const authController = require("../controller/authController");
+const authController = require("../controller/authController.js");
 const { body } = require("express-validator");
-const tokenverify = require("../middleware/isauth");
-const mailer = require("../middleware/mailer");
+const tokenverify = require("../middleware/isauth.js");
+const mailer = require("../middleware/mailer.js");
 
 const router = express.Router();
 
@@ -37,6 +37,15 @@ router.post(
       .withMessage("Name must be at least 2 characters long")
       .matches(/^[a-zA-Z\s]+$/)
       .withMessage("Name can only contain letters and spaces"),
+
+    body("phoneNo")
+      .trim()
+      .isNumeric()
+      .withMessage("Phone number must contain only numbers")
+      .isLength({ min: 10, max: 10 })
+      .withMessage("Phone number must be exactly 10 digits long")
+      .notEmpty()
+      .withMessage("Phone number is required"),
   ],
   authController.signUp,
   mailer.sent
@@ -121,6 +130,57 @@ router.put(
   ],
   tokenverify.verifytoken,
   authController.changePassword
+);
+
+router.put(
+  "/address",
+  [
+    body('houseNo')
+       .trim()
+       .notEmpty().withMessage('House number is required')
+       .isNumeric().withMessage("House Number must be numeric"),
+    
+    body('add1')
+       .trim()
+       .notEmpty().withMessage('Address line 1 is required')
+       .isString().withMessage('Address line 2 must be a string'),
+    
+    body('add2')
+       .trim()
+       .optional()
+       .isString().withMessage('Address line 2 must be a string'),
+    
+    body('add3')
+       .trim()
+       .optional()
+       .isString().withMessage('Address line 3 must be a string'),
+    
+    body('city')
+       .trim()
+       .notEmpty().withMessage('City is required')
+       .isString().withMessage('City must be a string'),
+    
+    body('state')
+       .trim()
+       .notEmpty().withMessage('State is required')
+       .isString().withMessage('State must be a string'),
+    
+    body('zip')
+      .trim()
+      .notEmpty().withMessage('ZIP code is required')
+      .isLength({ min: 7, max: 7 }).withMessage('ZIP code must be exactly 7 digits')
+      .isNumeric().withMessage('ZIP code must be numeric'),
+    
+    body('lat')
+      .optional()
+      .isDecimal().withMessage('Latitude must be a decimal number'),
+    
+    body('lon')
+      .optional()
+      .isDecimal().withMessage('Longitude must be a decimal number')
+  ],
+  tokenverify.verifytoken,
+  authController.address
 );
 
 module.exports = router;

@@ -1,4 +1,4 @@
-const User = require("../model/user");
+const User = require("../model/user.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
@@ -54,16 +54,11 @@ const sent = async (req, res, next) => {
       { expiresIn: "1d" }
     );
     const otp2 = await bcrypt.hash(otp, 12);
-    const updated = await User.updateOne(
-      { email: emailId.toLowerCase() },
-      {
-        $set: {
-          otp: otp2,
-          expireotp: Date.now() + 120000,
-          token,
-        },
-      }
-    );
+    old.token=token;
+    old.otp=otp2;
+    old.expireotp=Date.now() + 120000;
+
+    const updated = await old.save();
     if (!old)
       return res.status(201).json({
         success: true,

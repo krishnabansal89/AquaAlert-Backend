@@ -1,5 +1,5 @@
-const User = require("../model/user");
-const Room = require("../model/room");
+const User = require("../model/user.js");
+const Room = require("../model/room.js");
 const { validationResult } = require("express-validator");
 
 const getAll = async (req, res, next) => {
@@ -19,7 +19,7 @@ const getAll = async (req, res, next) => {
 const getOne = async (req, res, next) => {
   try {
     const roomId = req.query.roomId;
-    const room = await Room.find({ _id: roomId });
+    const room = await Room.findById(roomId);
     if (room) {
       return res.json({ success: true, room: room, token: req.user.token });
     } else {
@@ -65,19 +65,13 @@ const create = async (req, res, next) => {
 const update = async (req, res, next) => {
   try {
     const { roomId, roomName, calibrated } = req.body;
-    const room = await Room.find({ _id: roomId });
+    const room = await Room.findById(roomId);
     if (!room) {
       return res.json({ success: "false", message: "Room not found" });
     }
-    const updated = await Room.updateOne(
-      { _id: roomId },
-      {
-        $set: {
-          roomName,
-          calibrated,
-        },
-      }
-    );
+    room.roomName=roomName;
+    room.calibrated=calibrated;
+    const updated=await room.save();
     if (updated) {
       return res.json({
         success: true,
@@ -96,8 +90,12 @@ const update = async (req, res, next) => {
 const remove = async (req, res, next) => {
   try {
     const roomId = req.query.roomId;
-    const room = await Room.deleteOne({ _id: roomId });
-    if (room) {
+    const room = await Room.findById(roomId);
+    if (!room) {
+      return res.json({ success: "false", message: "Room not found" });
+    }
+    const result = await Room.deleteOne({ _id: roomId });
+    if (result.deletedCount==1) {
       return res.json({
         success: true,
         msg: "Room deleted",
