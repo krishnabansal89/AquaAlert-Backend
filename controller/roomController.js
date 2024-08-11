@@ -1,6 +1,4 @@
-const User = require("../model/user.js");
 const Room = require("../model/room.js");
-const { validationResult } = require("express-validator");
 
 const getAll = async (req, res, next) => {
   try {
@@ -34,13 +32,6 @@ const getOne = async (req, res, next) => {
 const create = async (req, res, next) => {
   try {
     const { roomName, waterConsum, calibrated } = req.body;
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      const error = new Error("Validation failed.");
-      error.statusCode = 422;
-      error.data = errors.array();
-      next(error);
-    }
     const room = await Room.create({
       roomName: roomName,
       waterConsum: waterConsum,
@@ -69,9 +60,9 @@ const update = async (req, res, next) => {
     if (!room) {
       return res.json({ success: "false", message: "Room not found" });
     }
-    room.roomName=roomName;
-    room.calibrated=calibrated;
-    const updated=await room.save();
+    room.roomName = roomName;
+    room.calibrated = calibrated;
+    const updated = await room.save();
     if (updated) {
       return res.json({
         success: true,
@@ -95,7 +86,7 @@ const remove = async (req, res, next) => {
       return res.json({ success: "false", message: "Room not found" });
     }
     const result = await Room.deleteOne({ _id: roomId });
-    if (result.deletedCount==1) {
+    if (result.deletedCount == 1) {
       return res.json({
         success: true,
         msg: "Room deleted",

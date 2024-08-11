@@ -1,18 +1,10 @@
 const User = require("../model/user.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { validationResult } = require("express-validator");
 
 const signUp = async (req, res, next) => {
   try {
-    const { email, password, phoneNo } = req.body;
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      const error = new Error("Validation failed.");
-      error.statusCode = 422;
-      error.data = errors.array();
-      next(error);
-    }
+    const { email, password,name, phoneNo } = req.body;
     const old = await User.findOne({ email: email.toLowerCase() });
     if (!old) {
       const encpassword = await bcrypt.hash(password, 12);
@@ -21,6 +13,7 @@ const signUp = async (req, res, next) => {
         email: email.toLowerCase(),
         password: encpassword,
         phoneNo: phoneNo,
+        name:name
       });
       if (result) {
         next();
@@ -54,7 +47,7 @@ const logIn = async (req, res, next) => {
         process.env.secretkey,
         { expiresIn: "1d" }
       );
-      user.token=token;
+      user.token = token;
       const updated = await user.save();
       if (updated) {
         return res.json({ success: true, msg: `Welcome`, token });
@@ -80,7 +73,7 @@ const forgotPassword = async (req, res, next) => {
       process.env.secretkey,
       { expiresIn: "1d" }
     );
-    user.token=token;
+    user.token = token;
     const updated = await user.save();
     if (updated) {
       next();
@@ -105,8 +98,8 @@ const otpVerify = async (req, res, next) => {
       { expiresIn: "1d" }
     );
     if (result) {
-      req.user.token=token;
-      req.user.emailverify=true;
+      req.user.token = token;
+      req.user.emailverify = true;
       const updated = await req.user.save();
       if (updated) {
         return res.json({ success: true, msg: "OTP verified", token });
@@ -130,7 +123,7 @@ const changePassword = async (req, res, next) => {
       });
     }
     const encpassword = await bcrypt.hash(newpassword, 12);
-    req.user.password=encpassword;
+    req.user.password = encpassword;
     const updated = await req.user.save();
     if (updated) {
       return res.json({

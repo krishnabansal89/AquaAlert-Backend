@@ -1,7 +1,8 @@
 const express = require("express");
-const { query,  body } = require("express-validator");
+const { query, body } = require("express-validator");
 const tokenverify = require("../middleware/isauth.js");
 const roomController = require("../controller/roomController.js");
+const validation=require("../middleware/validation.js")
 
 const router = express.Router();
 
@@ -18,7 +19,7 @@ router.post(
       .optional()
       .isNumeric()
       .withMessage("Calibrated value must be a number"),
-  ],
+  ],validation,
   tokenverify.verifytoken,
   roomController.create
 );
@@ -31,7 +32,7 @@ router.get(
       .withMessage("ID cannot be null")
       .isMongoId()
       .withMessage("ID must be a valid MongoDB ObjectId"),
-  ],
+  ],validation,
   tokenverify.verifytoken,
   roomController.getOne
 );
@@ -46,7 +47,7 @@ router.delete(
       .withMessage("ID cannot be null")
       .isMongoId()
       .withMessage("ID must be a valid MongoDB ObjectId"),
-  ],
+  ],validation,
   tokenverify.verifytoken,
   roomController.remove
 );
@@ -69,7 +70,7 @@ router.put(
       .optional()
       .isNumeric()
       .withMessage("Calibrated value must be a number"),
-  ],
+  ],validation,
   tokenverify.verifytoken,
   roomController.update
 );

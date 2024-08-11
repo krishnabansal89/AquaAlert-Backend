@@ -38,11 +38,10 @@ const addressSchema = new schema({
   lon: {
     type: Number,
     required: false,
-  }
+  },
 });
 
-
-const userschema = new schema({
+const userSchema = new schema({
   email: {
     type: String,
     required: true,
@@ -57,21 +56,21 @@ const userschema = new schema({
     type: String,
     required: true,
   },
-  phoneNo:{
+  phoneNo: {
     type: Number,
     required: true,
   },
   otp: {
-    type: Number,
+    type: String,
   },
 
   expireotp: {
     type: Date,
   },
-  
-  address:{
-    type:addressSchema,
-    required:false
+
+  address: {
+    type: addressSchema,
+    required: false,
   },
 
   token: {
@@ -84,4 +83,4 @@ const userschema = new schema({
   },
 });
 
-module.exports = mongoose.model("user", userschema);
+module.exports = mongoose.model("user", userSchema);

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const schema = mongoose.Schema;
 
-const deviceschema = new schema(
+const deviceSchema = new schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -41,4 +41,4 @@ const deviceschema = new schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("device", deviceschema);
+module.exports = mongoose.model("device", deviceSchema);

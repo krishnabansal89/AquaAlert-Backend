@@ -36,13 +36,9 @@ const sent = async (req, res, next) => {
           text: `Here is your four digit OTP for login ${otp} . Do not share it with anyone, if this is not you contact support.`,
         };
 
-        await transporter.sendMail(data, async (error, info) => {
-          if (error) {
-            throw new error();
-          }
-        });
+        await transporter.sendMail(data)
       } catch (err) {
-        console.log(err);
+        next(err)
       }
     }
     await mail();
@@ -54,9 +50,9 @@ const sent = async (req, res, next) => {
       { expiresIn: "1d" }
     );
     const otp2 = await bcrypt.hash(otp, 12);
-    old.token=token;
-    old.otp=otp2;
-    old.expireotp=Date.now() + 120000;
+    old.token = token;
+    old.otp = otp2;
+    old.expireotp = Date.now() + 120000;
 
     const updated = await old.save();
     if (!old)
@@ -75,10 +71,9 @@ const sent = async (req, res, next) => {
       });
     }
   } catch (err) {
-    console.log(err);
     console.log("mail not sent");
     next(err);
   }
 };
 
-module.exports = { sent };
+module.exports =sent ;

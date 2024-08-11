@@ -2,7 +2,8 @@ const express = require("express");
 const authController = require("../controller/authController.js");
 const { body } = require("express-validator");
 const tokenverify = require("../middleware/isauth.js");
-const mailer = require("../middleware/mailer.js");
+const sent= require("../middleware/mailer.js");
+const validation=require("../middleware/validation.js")
 
 const router = express.Router();
 
@@ -40,15 +41,15 @@ router.post(
 
     body("phoneNo")
       .trim()
-      .isNumeric()
+      .isInt()
       .withMessage("Phone number must contain only numbers")
       .isLength({ min: 10, max: 10 })
       .withMessage("Phone number must be exactly 10 digits long")
       .notEmpty()
       .withMessage("Phone number is required"),
-  ],
+  ],validation,
   authController.signUp,
-  mailer.sent
+  sent
 );
 
 router.post(
@@ -75,7 +76,7 @@ router.post(
       .withMessage(
         "Password must contain at least one special character (@, $, !, %, *, ?, &, #)"
       ),
-  ],
+  ],validation,
   authController.logIn
 );
 
@@ -88,9 +89,9 @@ router.post(
       .normalizeEmail()
       .notEmpty()
       .withMessage("Email is required"),
-  ],
+  ],validation,
   authController.forgotPassword,
-  mailer.sent
+  sent
 );
 
 router.post(
@@ -103,12 +104,12 @@ router.post(
       .withMessage("OTP must be a number")
       .isLength({ min: 4, max: 4 })
       .withMessage("OTP must be exactly 4 digits long"),
-  ],
+  ],validation,
   tokenverify.verifytoken,
   authController.otpVerify
 );
 
-router.put("/resendotp", tokenverify.verifytoken, mailer.sent);
+router.put("/resendotp", tokenverify.verifytoken, sent);
 
 router.put(
   "/changepassword",
@@ -127,7 +128,7 @@ router.put(
       .withMessage(
         "Password must contain at least one special character (@, $, !, %, *, ?, &, #)"
       ),
-  ],
+  ],validation,
   tokenverify.verifytoken,
   authController.changePassword
 );
@@ -135,50 +136,65 @@ router.put(
 router.put(
   "/address",
   [
-    body('houseNo')
-       .trim()
-       .notEmpty().withMessage('House number is required')
-       .isNumeric().withMessage("House Number must be numeric"),
-    
-    body('add1')
-       .trim()
-       .notEmpty().withMessage('Address line 1 is required')
-       .isString().withMessage('Address line 2 must be a string'),
-    
-    body('add2')
-       .trim()
-       .optional()
-       .isString().withMessage('Address line 2 must be a string'),
-    
-    body('add3')
-       .trim()
-       .optional()
-       .isString().withMessage('Address line 3 must be a string'),
-    
-    body('city')
-       .trim()
-       .notEmpty().withMessage('City is required')
-       .isString().withMessage('City must be a string'),
-    
-    body('state')
-       .trim()
-       .notEmpty().withMessage('State is required')
-       .isString().withMessage('State must be a string'),
-    
-    body('zip')
+    body("houseNo")
       .trim()
-      .notEmpty().withMessage('ZIP code is required')
-      .isLength({ min: 7, max: 7 }).withMessage('ZIP code must be exactly 7 digits')
-      .isNumeric().withMessage('ZIP code must be numeric'),
-    
-    body('lat')
+      .notEmpty()
+      .withMessage("House number is required")
+      .isNumeric()
+      .withMessage("House Number must be numeric"),
+
+    body("add1")
+      .trim()
+      .notEmpty()
+      .withMessage("Address line 1 is required")
+      .isString()
+      .withMessage("Address line 2 must be a string"),
+
+    body("add2")
+      .trim()
       .optional()
-      .isDecimal().withMessage('Latitude must be a decimal number'),
-    
-    body('lon')
+      .isString()
+      .withMessage("Address line 2 must be a string"),
+
+    body("add3")
+      .trim()
       .optional()
-      .isDecimal().withMessage('Longitude must be a decimal number')
-  ],
+      .isString()
+      .withMessage("Address line 3 must be a string"),
+
+    body("city")
+      .trim()
+      .notEmpty()
+      .withMessage("City is required")
+      .isString()
+      .withMessage("City must be a string"),
+
+    body("state")
+      .trim()
+      .notEmpty()
+      .withMessage("State is required")
+      .isString()
+      .withMessage("State must be a string"),
+
+    body("zip")
+      .trim()
+      .notEmpty()
+      .withMessage("ZIP code is required")
+      .isLength({ min: 7, max: 7 })
+      .withMessage("ZIP code must be exactly 7 digits")
+      .isNumeric()
+      .withMessage("ZIP code must be numeric"),
+
+    body("lat")
+      .optional()
+      .isDecimal()
+      .withMessage("Latitude must be a decimal number"),
+
+    body("lon")
+      .optional()
+      .isDecimal()
+      .withMessage("Longitude must be a decimal number"),
+  ],validation,
   tokenverify.verifytoken,
   authController.address
 );

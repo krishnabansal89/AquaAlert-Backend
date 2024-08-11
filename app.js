@@ -23,6 +23,17 @@ mongoose
     console.log(err);
   });
 
+//   const accountSid = process.env.authSid;
+// const authToken = process.env.authToken;
+// const client = require('twilio')(accountSid, authToken);
+
+// client.messages.create({
+//   body: 'Hello from AquaAlert.',
+//   from: '919565549492', // Your Twilio phone number
+//   to: '+919555353797'   // Recipient's phone number
+// })
+
+
 app.use("/auth", authRoutes);
 app.use("/room", roomRoutes);
 app.use("/device", deviceRoutes);

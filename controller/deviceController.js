@@ -1,4 +1,3 @@
-const User = require("../model/user.js");
 const Device = require("../model/device.js");
 const { validationResult } = require("express-validator");
 
@@ -33,13 +32,6 @@ const getOne = async (req, res, next) => {
 
 const create = async (req, res, next) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      const error = new Error("Validation failed.");
-      error.statusCode = 422;
-      error.data = errors.array();
-      next(error);
-    }
     const device = await Device.create({
       userId: req.user._id,
     });
@@ -61,11 +53,9 @@ const create = async (req, res, next) => {
 const remove = async (req, res, next) => {
   try {
     const deviceId = req.query.deviceId;
-    const device=await Device.findById(deviceId);
-    if(!device)
-    {
+    const device = await Device.findById(deviceId);
+    if (!device) {
       return res.json({ success: false, msg: "No Device found" });
-
     }
     const result = await Device.deleteOne({ _id: deviceId });
 
@@ -115,9 +105,9 @@ const remove = async (req, res, next) => {
 //   }
 // };
 
-const hardware=async (req,res,next)=>{
+const hardware = async (req, res, next) => {
   try {
-    const { deviceId, rate, pressure,time } = req.body;
+    const { deviceId, rate, pressure, time } = req.body;
     if (!time || isNaN(new Date(time).getTime())) {
       return res.json({ success: false, message: "Invalid time format" });
     }
@@ -130,36 +120,37 @@ const hardware=async (req,res,next)=>{
     if (!device) {
       return res.json({ success: false, message: "Device not found" });
     }
-    const waterConsum=rate*60;
-    device.hourConsum[minutes-1]=waterConsum;
+    const waterConsum = rate * 60;
+    device.hourConsum[minutes - 1] = waterConsum;
     const sumArray = (arr) => {
-      return arr.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+      return arr.reduce(
+        (accumulator, currentValue) => accumulator + currentValue,
+        0
+      );
     };
-    device.dailyConsum[hours-1] = sumArray(device.hourConsum); 
-    device.weekConsum[(day%7)-1] = sumArray(device.dailyConsum); 
-    device.monthConsum[day-1] = sumArray(device.monthConsum);
-    
-    device.rate=rate;
-    device.pressure=pressure;
+    device.dailyConsum[hours - 1] = sumArray(device.hourConsum);
+    device.weekConsum[(day % 7) - 1] = sumArray(device.dailyConsum);
+    device.monthConsum[day - 1] = sumArray(device.monthConsum);
 
-    const updated=await device.save();
+    device.rate = rate;
+    device.pressure = pressure;
+
+    const updated = await device.save();
     if (updated) {
       return res.json({
         success: true,
         message: "Device updated",
         token: req.user.token,
-        device:device
+        device: device,
       });
     } else {
       return res.json({ success: false, message: "Device not updated" });
     }
-
   } catch (err) {
     console.log(err);
     next(err);
   }
-
-}
+};
 
 module.exports = {
   create,
