@@ -64,7 +64,7 @@ router.post(
       .withMessage("Time must be a valid ISO 8601 date string"),
   ],validation,
   tokenverify.verifytoken,
-  deviceController.remove
+  deviceController.hardware
 );
 
 module.exports = router;
