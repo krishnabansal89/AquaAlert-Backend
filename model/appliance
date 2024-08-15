@@ -2,20 +2,24 @@ const mongoose = require("mongoose");
 
 const schema = mongoose.Schema;
 
-const roomSchema = new schema({
-  roomName: {
+const applianceSchema = new schema({
+  applianceName: {
     type: String,
     required: true,
   },
-  homeId: {
+  roomId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "home",
+    ref: "room",
     required: true,
   },
   waterConsum: {
     type: Number,
     default: 0,
-  }
+  },
+  calibrated: {
+    type: Number,
+    default: 0,
+  },
 });
 
-module.exports = mongoose.model("room", roomSchema);
+module.exports = mongoose.model("appliance", applianceSchema);

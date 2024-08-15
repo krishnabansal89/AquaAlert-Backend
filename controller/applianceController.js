@@ -31,10 +31,11 @@ const getOne = async (req, res, next) => {
 
 const create = async (req, res, next) => {
   try {
-    const { roomName, waterConsum} = req.body;
+    const { roomName, waterConsum, calibrated } = req.body;
     const room = await Room.create({
       roomName: roomName,
       waterConsum: waterConsum,
+      calibrated: calibrated,
       userId: req.user._id,
     });
     if (room) {
@@ -54,12 +55,13 @@ const create = async (req, res, next) => {
 
 const update = async (req, res, next) => {
   try {
-    const { roomId, roomName} = req.body;
+    const { roomId, roomName, calibrated } = req.body;
     const room = await Room.findById(roomId);
     if (!room) {
       return res.json({ success: "false", message: "Room not found" });
     }
     room.roomName = roomName;
+    room.calibrated = calibrated;
     const updated = await room.save();
     if (updated) {
       return res.json({

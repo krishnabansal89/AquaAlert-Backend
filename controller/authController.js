@@ -139,42 +139,12 @@ const changePassword = async (req, res, next) => {
     next(err);
   }
 };
-const address = async (req, res, next) => {
-  try {
-    const { houseNo, add1, add2, add3, city, state, zip, lat, lon } = req.body;
 
-    req.user.address = {
-      houseNo,
-      add1,
-      add2,
-      add3,
-      city,
-      state,
-      zip,
-      lat,
-      lon,
-    };
-    const updated = await req.user.save();
-    if (updated) {
-      return res.json({
-        success: true,
-        msg: "Address added",
-        token: req.user.token,
-      });
-    }
-
-    return res.json({ success: false, msg: "Address not added" });
-  } catch (err) {
-    console.log(err);
-    next(err);
-  }
-};
 
 module.exports = {
   signUp,
   logIn,
   otpVerify,
   changePassword,
-  forgotPassword,
-  address,
+  forgotPassword
 };
