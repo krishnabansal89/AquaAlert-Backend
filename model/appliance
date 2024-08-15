@@ -12,6 +12,11 @@ const applianceSchema = new schema({
     ref: "room",
     required: true,
   },
+  deviceId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "device",
+    required: true,
+  },
   waterConsum: {
     type: Number,
     default: 0,

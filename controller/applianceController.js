@@ -1,12 +1,13 @@
-const Room = require("../model/room.js");
+const Appliance = require("../model/appliance.js");
 
 const getAll = async (req, res, next) => {
   try {
-    const room = await Room.find({ userId: req.user._id });
-    if (room) {
-      return res.json({ success: true, room: room, token: req.user.token });
+    const roomId=req.body;
+    const appliance = await Appliance.find({ roomId:roomId});
+    if (appliance) {
+      return res.json({ success: true, appliance: appliance, token: req.user.token });
     } else {
-      return res.json({ success: false, msg: "Failed to load room" });
+      return res.json({ success: false, msg: "Failed to load appliance" });
     }
   } catch (error) {
     console.log(error);
@@ -16,12 +17,12 @@ const getAll = async (req, res, next) => {
 
 const getOne = async (req, res, next) => {
   try {
-    const roomId = req.query.roomId;
-    const room = await Room.findById(roomId);
-    if (room) {
-      return res.json({ success: true, room: room, token: req.user.token });
+    const applianceId = req.query.applianceId;
+    const appliance = await Appliance.findById(applianceId);
+    if (appliance) {
+      return res.json({ success: true, appliance: appliance, token: req.user.token });
     } else {
-      return res.json({ success: false, msg: "Failed to load room" });
+      return res.json({ success: false, msg: "Failed to load appliance" });
     }
   } catch (error) {
     console.log(error);
@@ -31,21 +32,22 @@ const getOne = async (req, res, next) => {
 
 const create = async (req, res, next) => {
   try {
-    const { roomName, waterConsum, calibrated } = req.body;
-    const room = await Room.create({
-      roomName: roomName,
+    const { applianceName, waterConsum, calibrated,roomId } = req.body;
+    const appliance = await Appliance.create({
+      applianceName: applianceName,
       waterConsum: waterConsum,
       calibrated: calibrated,
-      userId: req.user._id,
+      roomId: roomId,
+      deviceId:req.user.deviceId
     });
-    if (room) {
+    if (appliance) {
       return res.json({
         success: true,
-        msg: "Room created successfully",
+        msg: "Appliance created successfully",
         token: req.user.token,
       });
     } else {
-      return res.json({ success: false, msg: "Failed to create room" });
+      return res.json({ success: false, msg: "Failed to create appliance" });
     }
   } catch (error) {
     console.log(error);
@@ -55,22 +57,22 @@ const create = async (req, res, next) => {
 
 const update = async (req, res, next) => {
   try {
-    const { roomId, roomName, calibrated } = req.body;
-    const room = await Room.findById(roomId);
-    if (!room) {
-      return res.json({ success: "false", message: "Room not found" });
+    const { applianceId, applianceName, calibrated } = req.body;
+    const appliance = await Appliance.findById(applianceId);
+    if (!appliance) {
+      return res.json({ success: "false", message: "Appliance not found" });
     }
-    room.roomName = roomName;
-    room.calibrated = calibrated;
-    const updated = await room.save();
+    appliance.applianceName = applianceName;
+    appliance.calibrated = calibrated;
+    const updated = await appliance.save();
     if (updated) {
       return res.json({
         success: true,
-        message: "Room updated",
+        message: "Appliance updated",
         token: req.user.token,
       });
     } else {
-      return res.json({ success: false, message: "Room not updated" });
+      return res.json({ success: false, message: "Appliance not updated" });
     }
   } catch (err) {
     console.log(err);
@@ -80,20 +82,20 @@ const update = async (req, res, next) => {
 
 const remove = async (req, res, next) => {
   try {
-    const roomId = req.query.roomId;
-    const room = await Room.findById(roomId);
-    if (!room) {
-      return res.json({ success: "false", message: "Room not found" });
+    const applianceId = req.query.applianceId;
+    const appliance = await Appliance.findById(applianceId);
+    if (!appliance) {
+      return res.json({ success: "false", message: "Appliance not found" });
     }
-    const result = await Room.deleteOne({ _id: roomId });
+    const result = await Appliance.deleteOne({ _id: applianceId });
     if (result.deletedCount == 1) {
       return res.json({
         success: true,
-        msg: "Room deleted",
+        msg: "Appliance deleted",
         token: req.user.token,
       });
     } else {
-      return res.json({ success: false, msg: "Failed to delete room" });
+      return res.json({ success: false, msg: "Failed to delete appliance" });
     }
   } catch (error) {
     console.log(error);

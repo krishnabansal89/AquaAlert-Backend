@@ -39,6 +39,12 @@ const userSchema = new schema({
     type: Boolean,
     default: false,
   },
+  deviceId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "device",
+    required: true,
+  }
+
 });
 
 module.exports = mongoose.model("user", userSchema);

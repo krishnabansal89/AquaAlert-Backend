@@ -36,6 +36,73 @@ router.delete(
   deviceController.remove
 );
 
+router.post("/create",[
+  body("houseNo")
+      .trim()
+      .notEmpty()
+      .withMessage("House number is required")
+      .isNumeric()
+      .withMessage("House Number must be numeric"),
+
+    body("add1")
+      .trim()
+      .notEmpty()
+      .withMessage("Address line 1 is required")
+      .isString()
+      .withMessage("Address line 2 must be a string"),
+
+    body("add2")
+      .trim()
+      .optional()
+      .isString()
+      .withMessage("Address line 2 must be a string"),
+
+    body("add3")
+      .trim()
+      .optional()
+      .isString()
+      .withMessage("Address line 3 must be a string"),
+
+    body("city")
+      .trim()
+      .notEmpty()
+      .withMessage("City is required")
+      .isString()
+      .withMessage("City must be a string"),
+
+    body("state")
+      .trim()
+      .notEmpty()
+      .withMessage("State is required")
+      .isString()
+      .withMessage("State must be a string"),
+
+    body("zip")
+      .trim()
+      .notEmpty()
+      .withMessage("ZIP code is required")
+      .isLength({ min: 7, max: 7 })
+      .withMessage("ZIP code must be exactly 7 digits")
+      .isNumeric()
+      .withMessage("ZIP code must be numeric"),
+
+    body("lat")
+      .optional()
+      .isDecimal()
+      .withMessage("Latitude must be a decimal number"),
+
+    body("lon")
+      .optional()
+      .isDecimal()
+      .withMessage("Longitude must be a decimal number"),
+    body("person")
+      .optional()
+      .isInt()
+      .withMessage("Person must be a decimal number")],
+      validation,
+      tokenverify.verifytoken,
+      deviceController.create);
+
 router.post(
   "/hardware",
   [

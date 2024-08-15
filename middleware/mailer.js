@@ -2,6 +2,7 @@ const User = require("../model/user.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+const client = require('twilio')(process.env.accountSid,process.env.authToken);
 
 const sent = async (req, res, next) => {
   try {
@@ -15,33 +16,16 @@ const sent = async (req, res, next) => {
       specialChars: false,
     });
 
-    async function mail() {
-      try {
-        var transporter = nodemailer.createTransport({
-          secure: true,
-          service: "gmail",
-          auth: {
-            user: process.env.AUTH_EMAIL,
-            pass: process.env.AUTH_PASS,
-            authentication: "plain",
-          },
-          tls: {
-            rejectUnauthorized: false,
-          },
-        });
-        const data = {
-          from: "sahayak@aicte.com",
-          to: emailId,
-          subject: "Verify your email",
-          text: `Here is your four digit OTP for login ${otp} . Do not share it with anyone, if this is not you contact support.`,
-        };
 
-        await transporter.sendMail(data)
-      } catch (err) {
-        next(err)
-      }
-    }
-    await mail();
+  const customMessage = `Here is your four digit OTP for login ${otp} . Do not share it with anyone, if this is not you contact support.`;
+     client.messages.create({
+    body: customMessage,
+    from: process.env.twilioNo, // Your Twilio phone number
+    to: '+919565549492'
+})
+.then(message => console.log(message.sid))
+.catch(error => console.error(error));
+
     // const image=require('')
 
     const token = jwt.sign(
