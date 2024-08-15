@@ -1,0 +1,6 @@
+const express = require("express");
+const {tokenverify} = require("../middleware/isauth.js");
+const router = express.Router();
+const userController = require("../controllers/userController.js");
+
+router.post("/updateRoom" , tokenverify , userController.updateRoom);
